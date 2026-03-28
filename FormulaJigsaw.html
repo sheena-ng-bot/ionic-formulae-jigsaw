@@ -1,485 +1,448 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #6d6d6d; -webkit-text-stroke: #6d6d6d}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #6b0001; -webkit-text-stroke: #6b0001}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #fb0007; -webkit-text-stroke: #fb0007}
-    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #0000ff; -webkit-text-stroke: #0000ff}
-    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; -webkit-text-stroke: #000000}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; -webkit-text-stroke: #000000; min-height: 16.0px}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #093c94; -webkit-text-stroke: #093c94}
-    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #18702b; -webkit-text-stroke: #18702b}
-    p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #4d5055; -webkit-text-stroke: #4d5055}
-    span.s1 {font-kerning: none; background-color: #ecf1f7}
-    span.s2 {font-kerning: none; color: #fb0007; background-color: #ecf1f7; -webkit-text-stroke: 0px #fb0007}
-    span.s3 {font-kerning: none; color: #2a2a2a; background-color: #ecf1f7; -webkit-text-stroke: 0px #2a2a2a}
-    span.s4 {font-kerning: none; color: #000000; background-color: #ecf1f7; -webkit-text-stroke: 0px #000000}
-    span.s5 {font-kerning: none; color: #0000ff; background-color: #ecf1f7; -webkit-text-stroke: 0px #0000ff}
-    span.s6 {font-kerning: none; color: #6b0001; background-color: #ecf1f7; -webkit-text-stroke: 0px #6b0001}
-    span.s7 {font-kerning: none; color: #093c94; background-color: #ecf1f7; -webkit-text-stroke: 0px #093c94}
-    span.s8 {font-kerning: none}
-    span.s9 {font-kerning: none; color: #137646; background-color: #ecf1f7; -webkit-text-stroke: 0px #137646}
-    span.s10 {font-kerning: none; color: #6f0ec3; background-color: #ecf1f7; -webkit-text-stroke: 0px #6f0ec3}
-    span.s11 {font-kerning: none; color: #18702b; background-color: #ecf1f7; -webkit-text-stroke: 0px #18702b}
-    span.s12 {font-kerning: none; color: #a4450b; background-color: #ecf1f7; -webkit-text-stroke: 0px #a4450b}
-    span.s13 {font-kerning: none; color: #0e6e6d; background-color: #ecf1f7; -webkit-text-stroke: 0px #0e6e6d}
-    span.s14 {font-kerning: none; color: #4d5055; background-color: #ecf1f7; -webkit-text-stroke: 0px #4d5055}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ionic Bonding Jigsaw Puzzle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --cation-color: #3b82f6;
+            --anion-color: #ef4444;
+        }
+
+        body {
+            touch-action: none;
+            overflow: hidden;
+            background-color: #f8fafc;
+            user-select: none;
+        }
+
+        .ion-piece {
+            position: absolute;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+            z-index: 50;
+            transition: filter 0.2s;
+        }
+
+        .ion-piece.snapped {
+            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.6));
+        }
+
+        .ion-piece:active {
+            cursor: grabbing;
+            z-index: 1000 !important;
+        }
+
+        .svg-piece {
+            pointer-events: none;
+            display: block;
+        }
+
+        .canvas-area {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 25px 25px;
+        }
+
+        .sidebar {
+            width: 200px;
+            overflow-y: auto;
+            background: white;
+            z-index: 10;
+        }
+
+        .chem-formula sub {
+            font-size: 0.5em;
+            vertical-align: sub;
+            line-height: 0;
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
 </head>
-<body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE</span><span class="s2"> html</span><span class="s1">&gt;</span></p>
-<p class="p2"><span class="s3">&lt;</span><span class="s1">html</span><span class="s4"> </span><span class="s2">lang</span><span class="s3">=</span><span class="s5">"en"</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s3">&lt;</span><span class="s1">head</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">meta</span><span class="s4"> </span><span class="s1">charset</span><span class="s3">=</span><span class="s5">"UTF-8"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">meta</span><span class="s4"> </span><span class="s2">name</span><span class="s3">=</span><span class="s1">"viewport"</span><span class="s4"> </span><span class="s2">content</span><span class="s3">=</span><span class="s1">"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">title</span><span class="s3">&gt;</span><span class="s1">Ionic Bonding Jigsaw Puzzle</span><span class="s3">&lt;/</span><span class="s6">title</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">script</span><span class="s4"> </span><span class="s2">src</span><span class="s3">=</span><span class="s1">"https://cdn.tailwindcss.com"</span><span class="s3">&gt;&lt;/</span><span class="s6">script</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s1">style</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">:root</span><span class="s1"> {</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">--cation-color:</span><span class="s4"> </span><span class="s7">#3b82f6</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">--anion-color:</span><span class="s1"> </span><span class="s7">#ef4444</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">body</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">touch-action:</span><span class="s1"> </span><span class="s7">none</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">overflow:</span><span class="s1"> </span><span class="s7">hidden</span><span class="s1">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">background-color:</span><span class="s4"> </span><span class="s7">#f8fafc</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">user-select:</span><span class="s1"> </span><span class="s7">none</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">.ion-piece</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">position:</span><span class="s1"> </span><span class="s7">absolute</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s7">grab</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s1"> </span><span class="s7">flex</span><span class="s1">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">flex-direction:</span><span class="s4"> </span><span class="s7">column</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">align-items:</span><span class="s1"> </span><span class="s7">center</span><span class="s1">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">justify-content:</span><span class="s4"> </span><span class="s7">center</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">filter:</span><span class="s1"> </span><span class="s7">drop-shadow(</span><span class="s9">2px</span><span class="s1"> </span><span class="s9">4px</span><span class="s1"> </span><span class="s9">6px</span><span class="s1"> </span><span class="s7">rgba(</span><span class="s9">0</span><span class="s1">,</span><span class="s9">0</span><span class="s1">,</span><span class="s9">0</span><span class="s1">,</span><span class="s9">0.15</span><span class="s7">))</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">z-index:</span><span class="s1"> </span><span class="s9">50</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s1"> </span><span class="s7">filter</span><span class="s1"> </span><span class="s9">0.2s</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.ion-piece.snapped</span><span class="s4"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">filter:</span><span class="s1"> </span><span class="s7">drop-shadow(</span><span class="s9">0</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">12px</span><span class="s1"> </span><span class="s7">rgba(</span><span class="s9">59</span><span class="s1">, </span><span class="s9">130</span><span class="s1">, </span><span class="s9">246</span><span class="s1">, </span><span class="s9">0.6</span><span class="s7">))</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.ion-piece:active</span><span class="s4"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s7">grabbing</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">z-index:</span><span class="s1"> </span><span class="s9">1000</span><span class="s1"> </span><span class="s10">!important</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">.svg-piece</span><span class="s1"> {</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">pointer-events:</span><span class="s4"> </span><span class="s7">none</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s1"> </span><span class="s7">block</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.canvas-area</span><span class="s4"> {</span></p>
-<p class="p7"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-image:</span><span class="s4"> </span><span class="s1">radial-gradient(#cbd5e1</span><span class="s4"> </span><span class="s9">1px</span><span class="s4">, </span><span class="s1">transparent</span><span class="s4"> </span><span class="s9">1px</span><span class="s1">)</span><span class="s4">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">background-size:</span><span class="s4"> </span><span class="s9">25px</span><span class="s4"> </span><span class="s9">25px</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">.sidebar</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s1"> </span><span class="s9">200px</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">overflow-y:</span><span class="s1"> </span><span class="s7">auto</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background:</span><span class="s1"> </span><span class="s7">white</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">z-index:</span><span class="s1"> </span><span class="s9">10</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.chem-formula</span><span class="s4"> </span><span class="s1">sub</span><span class="s4"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">0.5em</span><span class="s1">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">vertical-align:</span><span class="s4"> </span><span class="s7">sub</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">line-height:</span><span class="s1"> </span><span class="s9">0</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">.scale-in</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">animation:</span><span class="s1"> </span><span class="s7">scaleIn</span><span class="s1"> </span><span class="s9">0.3s</span><span class="s1"> </span><span class="s7">cubic-bezier(</span><span class="s9">0.34</span><span class="s1">, </span><span class="s9">1.56</span><span class="s1">, </span><span class="s9">0.64</span><span class="s1">, </span><span class="s9">1</span><span class="s7">)</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">@keyframes</span><span class="s1"> </span><span class="s7">scaleIn</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s9">0%</span><span class="s1"> { </span><span class="s2">transform:</span><span class="s1"> </span><span class="s7">scale(</span><span class="s9">0.9</span><span class="s7">)</span><span class="s1">; </span><span class="s2">opacity:</span><span class="s1"> </span><span class="s9">0</span><span class="s1">; }</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s9">100%</span><span class="s1"> { </span><span class="s2">transform:</span><span class="s1"> </span><span class="s7">scale(</span><span class="s9">1</span><span class="s7">)</span><span class="s1">; </span><span class="s2">opacity:</span><span class="s1"> </span><span class="s9">1</span><span class="s1">; }</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s1">style</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s3">&lt;/</span><span class="s1">head</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s3">&lt;</span><span class="s6">body</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"h-screen flex flex-col font-sans text-slate-900"</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">header</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"bg-slate-900 text-white p-4 shadow-md flex justify-between items-center"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"flex items-center gap-3"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"bg-blue-500 p-2 rounded-lg"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">svg</span><span class="s4"> </span><span class="s2">xmlns</span><span class="s3">=</span><span class="s1">"http://www.w3.org/2000/svg"</span><span class="s4"> </span><span class="s2">width</span><span class="s3">=</span><span class="s1">"20"</span><span class="s4"> </span><span class="s2">height</span><span class="s3">=</span><span class="s1">"20"</span><span class="s4"> </span><span class="s2">viewBox</span><span class="s3">=</span><span class="s1">"0 0 24 24"</span><span class="s4"> </span><span class="s2">fill</span><span class="s3">=</span><span class="s1">"none"</span><span class="s4"> </span><span class="s2">stroke</span><span class="s3">=</span><span class="s1">"currentColor"</span><span class="s4"> </span><span class="s2">stroke-width</span><span class="s3">=</span><span class="s1">"2.5"</span><span class="s4"> </span><span class="s2">stroke-linecap</span><span class="s3">=</span><span class="s1">"round"</span><span class="s4"> </span><span class="s2">stroke-linejoin</span><span class="s3">=</span><span class="s1">"round"</span><span class="s3">&gt;&lt;</span><span class="s6">path</span><span class="s4"> </span><span class="s2">d</span><span class="s3">=</span><span class="s1">"m8 3 4 8 5-5 5 15H2L8 3z"</span><span class="s3">/&gt;&lt;/</span><span class="s6">svg</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">h1</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"text-lg font-bold tracking-tight leading-none"</span><span class="s3">&gt;</span><span class="s4">Ionic Lab</span><span class="s3">&lt;/</span><span class="s6">h1</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">p</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"text-[10px] text-slate-400 font-medium uppercase tracking-widest mt-1"</span><span class="s3">&gt;</span><span class="s4">Neutralize the Charge</span><span class="s3">&lt;/</span><span class="s6">p</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"flex gap-3"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">onclick</span><span class="s3">=</span><span class="s1">"clearCanvas()"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-xs transition font-semibold"</span><span class="s3">&gt;</span><span class="s4">Reset</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">onclick</span><span class="s3">=</span><span class="s1">"checkBonding()"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold transition shadow-lg border-b-4 border-blue-800 active:border-b-0 active:translate-y-1"</span><span class="s3">&gt;</span><span class="s4">Check Balance</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s1">header</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"flex flex-1 overflow-hidden"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">aside</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"sidebar p-3 flex flex-col gap-3 border-r border-slate-200"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">h2</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"font-black text-blue-600 text-center border-b border-blue-50 pb-2 uppercase text-[10px] tracking-widest"</span><span class="s3">&gt;</span><span class="s4">Cations (+)</span><span class="s3">&lt;/</span><span class="s6">h2</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"cations-bench"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"space-y-3"</span><span class="s3">&gt;&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">aside</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">main</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"canvas"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"flex-1 relative canvas-area overflow-hidden bg-slate-50"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"instruction-overlay"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-20 transition-opacity duration-500"</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">p</span><span class="s1"> </span><span class="s2">class</span><span class="s3">=</span><span class="s5">"text-2xl font-black italic"</span><span class="s3">&gt;</span><span class="s1">CONSTRUCT A COMPOUND</span><span class="s3">&lt;/</span><span class="s6">p</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">p</span><span class="s1"> </span><span class="s2">class</span><span class="s3">=</span><span class="s5">"text-sm font-medium"</span><span class="s3">&gt;</span><span class="s1">Stack ions vertically and connect horizontally</span><span class="s3">&lt;/</span><span class="s6">p</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">main</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">aside</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"sidebar p-3 flex flex-col gap-3 border-l border-slate-200"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">h2</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"font-black text-red-600 text-center border-b border-red-50 pb-2 uppercase text-[10px] tracking-widest"</span><span class="s3">&gt;</span><span class="s4">Anions (-)</span><span class="s3">&lt;/</span><span class="s6">h2</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"anions-bench"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"space-y-3"</span><span class="s3">&gt;&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">aside</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"formula-modal"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"fixed inset-0 bg-slate-900/90 hidden items-center justify-center z-[2000] p-4 backdrop-blur-md"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center border border-slate-100 scale-in"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"modal-icon"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">svg</span><span class="s4"> </span><span class="s2">xmlns</span><span class="s3">=</span><span class="s1">"http://www.w3.org/2000/svg"</span><span class="s4"> </span><span class="s2">width</span><span class="s3">=</span><span class="s1">"40"</span><span class="s4"> </span><span class="s2">height</span><span class="s3">=</span><span class="s1">"40"</span><span class="s4"> </span><span class="s2">viewBox</span><span class="s3">=</span><span class="s1">"0 0 24 24"</span><span class="s4"> </span><span class="s2">fill</span><span class="s3">=</span><span class="s1">"none"</span><span class="s4"> </span><span class="s2">stroke</span><span class="s3">=</span><span class="s1">"currentColor"</span><span class="s4"> </span><span class="s2">stroke-width</span><span class="s3">=</span><span class="s1">"3"</span><span class="s4"> </span><span class="s2">stroke-linecap</span><span class="s3">=</span><span class="s1">"round"</span><span class="s4"> </span><span class="s2">stroke-linejoin</span><span class="s3">=</span><span class="s1">"round"</span><span class="s3">&gt;&lt;</span><span class="s6">polyline</span><span class="s4"> </span><span class="s2">points</span><span class="s3">=</span><span class="s1">"20 6 9 17 4 12"</span><span class="s3">&gt;&lt;/</span><span class="s6">polyline</span><span class="s3">&gt;&lt;/</span><span class="s6">svg</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">h3</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"modal-status"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"text-slate-400 uppercase tracking-[0.2em] text-[10px] font-black mb-2"</span><span class="s3">&gt;</span><span class="s4">Neutral Compound Formed</span><span class="s3">&lt;/</span><span class="s6">h3</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"compound-name"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"text-3xl font-extrabold text-slate-800 mb-2"</span><span class="s3">&gt;&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"compound-formula"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"text-6xl font-serif text-blue-600 mb-10 chem-formula tracking-tight"</span><span class="s3">&gt;&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">onclick</span><span class="s3">=</span><span class="s1">"closeModal()"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-lg"</span><span class="s3">&gt;</span><span class="s4">Continue Lab</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s1">script</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">const</span><span class="s1"> cations = [</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'nh4'</span><span class="s1">, name: </span><span class="s11">'Ammonium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'NH₄'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1">, poly: </span><span class="s10">true</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'li'</span><span class="s1">, name: </span><span class="s11">'Lithium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Li'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'na'</span><span class="s1">, name: </span><span class="s11">'Sodium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Na'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'k'</span><span class="s1">, name: </span><span class="s11">'Potassium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'K'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'ca'</span><span class="s1">, name: </span><span class="s11">'Calcium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Ca'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'mg'</span><span class="s1">, name: </span><span class="s11">'Magnesium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Mg'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'zn'</span><span class="s1">, name: </span><span class="s11">'Zinc'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Zn'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'fe2'</span><span class="s1">, name: </span><span class="s11">'Iron(II)'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Fe'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'cu2'</span><span class="s1">, name: </span><span class="s11">'Copper(II)'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Cu'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'al'</span><span class="s1">, name: </span><span class="s11">'Aluminium'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Al'</span><span class="s1">, charge: </span><span class="s12">3</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'fe3'</span><span class="s1">, name: </span><span class="s11">'Iron(III)'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Fe'</span><span class="s1">, charge: </span><span class="s12">3</span><span class="s1"> }</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>];</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">const</span><span class="s1"> anions = [</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'cl'</span><span class="s1">, name: </span><span class="s11">'Chloride'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'Cl'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'no3'</span><span class="s1">, name: </span><span class="s11">'Nitrate'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'NO₃'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1">, poly: </span><span class="s10">true</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'oh'</span><span class="s1">, name: </span><span class="s11">'Hydroxide'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'OH'</span><span class="s1">, charge: </span><span class="s12">1</span><span class="s1">, poly: </span><span class="s10">true</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'o'</span><span class="s1">, name: </span><span class="s11">'Oxide'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'O'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'s'</span><span class="s1">, name: </span><span class="s11">'Sulfide'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'S'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'so4'</span><span class="s1">, name: </span><span class="s11">'Sulfate'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'SO₄'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1">, poly: </span><span class="s10">true</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'co3'</span><span class="s1">, name: </span><span class="s11">'Carbonate'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'CO₃'</span><span class="s1">, charge: </span><span class="s12">2</span><span class="s1">, poly: </span><span class="s10">true</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'n'</span><span class="s1">, name: </span><span class="s11">'Nitride'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'N'</span><span class="s1">, charge: </span><span class="s12">3</span><span class="s1"> },</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>{ id: </span><span class="s11">'po4'</span><span class="s1">, name: </span><span class="s11">'Phosphate'</span><span class="s1">, </span><span class="s10">symbol</span><span class="s1">: </span><span class="s11">'PO₄'</span><span class="s1">, charge: </span><span class="s12">3</span><span class="s1">, poly: </span><span class="s10">true</span><span class="s1"> }</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>];</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">let</span><span class="s1"> activePieces = [];</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">let</span><span class="s1"> draggedElement = </span><span class="s10">null</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">let</span><span class="s1"> startX, startY, initialX, initialY;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> init() {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>renderBench(</span><span class="s11">'cations-bench'</span><span class="s1">, cations, </span><span class="s11">'cation'</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>renderBench(</span><span class="s11">'anions-bench'</span><span class="s1">, anions, </span><span class="s11">'anion'</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>window.addEventListener(</span><span class="s11">'mousemove'</span><span class="s1">, handleDrag);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>window.addEventListener(</span><span class="s11">'mouseup'</span><span class="s1">, endDrag);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>window.addEventListener(</span><span class="s11">'touchmove'</span><span class="s1">, handleDrag, { passive: </span><span class="s10">false</span><span class="s1"> });</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>window.addEventListener(</span><span class="s11">'touchend'</span><span class="s1">, endDrag);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> createPieceSVG(type, charge, </span><span class="s10">symbol</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> width = </span><span class="s12">80</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> height = charge * </span><span class="s12">45</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> holeRadius = </span><span class="s12">14</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> color = type === </span><span class="s11">'cation'</span><span class="s1"> ? </span><span class="s11">'#3b82f6'</span><span class="s1"> : </span><span class="s11">'#ef4444'</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> sign = type === </span><span class="s11">'cation'</span><span class="s1"> ? </span><span class="s11">'+'</span><span class="s1"> : </span><span class="s11">'-'</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> chargeText = charge &gt; </span><span class="s12">1</span><span class="s1"> ? </span><span class="s11">`</span><span class="s1">${charge}${sign}</span><span class="s11">`</span><span class="s1"> : sign;</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s10">let</span><span class="s4"> svg = </span><span class="s1">`&lt;svg width="</span><span class="s4">${width + </span><span class="s12">20</span><span class="s4">}</span><span class="s1">" height="</span><span class="s4">${height}</span><span class="s1">" viewBox="0 0 </span><span class="s4">${width + </span><span class="s12">20</span><span class="s4">}</span><span class="s1"> </span><span class="s4">${height}</span><span class="s1">" class="svg-piece" xmlns="http://www.w3.org/2000/svg"&gt;`</span><span class="s4">;</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (type === </span><span class="s11">'cation'</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">let</span><span class="s1"> d = </span><span class="s11">`M 0 0 H </span><span class="s1">${width}</span><span class="s11"> `</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">for</span><span class="s1">(</span><span class="s10">let</span><span class="s1"> i=</span><span class="s12">0</span><span class="s1">; i&lt;charge; i++) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> y = i * </span><span class="s12">45</span><span class="s1"> + </span><span class="s12">22.5</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>d += </span><span class="s11">`V </span><span class="s1">${y-holeRadius}</span><span class="s11"> A </span><span class="s1">${holeRadius}</span><span class="s11"> </span><span class="s1">${holeRadius}</span><span class="s11"> 0 0 0 </span><span class="s1">${width}</span><span class="s11"> </span><span class="s1">${y+holeRadius}</span><span class="s11"> `</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>d += </span><span class="s11">`V </span><span class="s1">${height}</span><span class="s11"> H 0 Z`</span><span class="s1">;</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>svg += </span><span class="s1">`&lt;path d="</span><span class="s4">${d}</span><span class="s1">" fill="</span><span class="s4">${color}</span><span class="s1">" stroke="rgba(0,0,0,0.15)" stroke-width="1"/&gt;`</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>} </span><span class="s10">else</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">let</span><span class="s1"> d = </span><span class="s11">`M 20 0 H </span><span class="s1">${width+</span><span class="s12">20</span><span class="s1">}</span><span class="s11"> V </span><span class="s1">${height}</span><span class="s11"> H 20 `</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">for</span><span class="s1">(</span><span class="s10">let</span><span class="s1"> i=charge-</span><span class="s12">1</span><span class="s1">; i&gt;=</span><span class="s12">0</span><span class="s1">; i--) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> y = i * </span><span class="s12">45</span><span class="s1"> + </span><span class="s12">22.5</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>d += </span><span class="s11">`V </span><span class="s1">${y+holeRadius}</span><span class="s11"> A </span><span class="s1">${holeRadius}</span><span class="s11"> </span><span class="s1">${holeRadius}</span><span class="s11"> 0 0 1 20 </span><span class="s1">${y-holeRadius}</span><span class="s11"> `</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>d += </span><span class="s11">`Z`</span><span class="s1">;</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>svg += </span><span class="s1">`&lt;path d="</span><span class="s4">${d}</span><span class="s1">" fill="</span><span class="s4">${color}</span><span class="s1">" stroke="rgba(0,0,0,0.15)" stroke-width="1"/&gt;`</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> centerX = type === </span><span class="s11">'cation'</span><span class="s1"> ? width/</span><span class="s12">2</span><span class="s1"> : width/</span><span class="s12">2</span><span class="s1"> + </span><span class="s12">20</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> centerY = height/</span><span class="s12">2</span><span class="s1">;</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">            </span>svg += </span><span class="s1">`&lt;text x="</span><span class="s4">${centerX - </span><span class="s12">6</span><span class="s4">}</span><span class="s1">" y="</span><span class="s4">${centerY + </span><span class="s12">7</span><span class="s4">}</span><span class="s1">" text-anchor="middle" fill="white" font-weight="900" font-size="20" font-family="serif"&gt;</span><span class="s4">${</span><span class="s10">symbol</span><span class="s4">}</span><span class="s1">&lt;/text&gt;`</span><span class="s4">;</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">            </span>svg += </span><span class="s1">`&lt;text x="</span><span class="s4">${centerX + (</span><span class="s10">symbol</span><span class="s4">.length &gt; </span><span class="s12">2</span><span class="s4"> ? </span><span class="s12">16</span><span class="s4"> : </span><span class="s12">12</span><span class="s4">)}</span><span class="s1">" y="</span><span class="s4">${centerY - </span><span class="s12">4</span><span class="s4">}</span><span class="s1">" text-anchor="start" fill="white" fill-opacity="0.8" font-weight="bold" font-size="12" font-family="sans-serif"&gt;</span><span class="s4">${chargeText}</span><span class="s1">&lt;/text&gt;`</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>svg += </span><span class="s11">`&lt;/svg&gt;`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">return</span><span class="s1"> svg;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> renderBench(id, list, type) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> bench = document.getElementById(id);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>list.forEach(ion =&gt; {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> item = document.createElement(</span><span class="s11">'div'</span><span class="s1">);</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>item.className = </span><span class="s1">'flex flex-col items-center p-2 border border-slate-100 rounded-xl hover:bg-slate-50 cursor-pointer transition-all active:scale-95 bg-white'</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>item.innerHTML = </span><span class="s11">`</span></p>
-<p class="p8"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-1 pointer-events-none"&gt;</span><span class="s4">${createPieceSVG(type, ion.charge, ion.</span><span class="s10">symbol</span><span class="s4">)}</span><span class="s1">&lt;/div&gt;</span></p>
-<p class="p8"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;span class="text-[9px] font-black text-slate-400 uppercase tracking-tight"&gt;</span><span class="s4">${ion.name}</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p8"><span class="s1"><span class="Apple-converted-space">                </span>`</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>item.addEventListener(</span><span class="s11">'mousedown'</span><span class="s1">, (e) =&gt; startSpawn(e, ion, type));</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>item.addEventListener(</span><span class="s11">'touchstart'</span><span class="s1">, (e) =&gt; startSpawn(e, ion, type), { passive: </span><span class="s10">false</span><span class="s1"> });</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>bench.appendChild(item);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> startSpawn(e, ion, type) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (e.cancelable) e.preventDefault();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clientX = e.touches ? e.touches[</span><span class="s12">0</span><span class="s1">].clientX : e.clientX;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clientY = e.touches ? e.touches[</span><span class="s12">0</span><span class="s1">].clientY : e.clientY;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> piece = document.createElement(</span><span class="s11">'div'</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.className = </span><span class="s11">'ion-piece'</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.dataset.type = type;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.dataset.charge = ion.charge;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.dataset.</span><span class="s10">symbol</span><span class="s1"> = ion.</span><span class="s10">symbol</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.dataset.name = ion.name;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.dataset.id = ion.id;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.dataset.poly = ion.poly || </span><span class="s10">false</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.innerHTML = createPieceSVG(type, ion.charge, ion.</span><span class="s10">symbol</span><span class="s1">);</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> canvas = document.getElementById(</span><span class="s11">'canvas'</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>canvas.appendChild(piece);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> canvasRect = canvas.getBoundingClientRect();</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>initialX = clientX - canvasRect.left - </span><span class="s12">50</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>initialY = clientY - canvasRect.top - (ion.charge * </span><span class="s12">45</span><span class="s1"> / </span><span class="s12">2</span><span class="s1">);</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.style.left = </span><span class="s11">`</span><span class="s1">${initialX}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.style.top = </span><span class="s11">`</span><span class="s1">${initialY}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>draggedElement = piece;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>startX = clientX;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>startY = clientY;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>activePieces.push(piece);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById(</span><span class="s11">'instruction-overlay'</span><span class="s1">).style.opacity = </span><span class="s11">'0'</span><span class="s1">;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.addEventListener(</span><span class="s11">'mousedown'</span><span class="s1">, (e) =&gt; startExistingDrag(e, piece));</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.addEventListener(</span><span class="s11">'touchstart'</span><span class="s1">, (e) =&gt; startExistingDrag(e, piece), { passive: </span><span class="s10">false</span><span class="s1"> });</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> startExistingDrag(e, piece) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (e.cancelable) e.preventDefault();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>e.stopPropagation();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clientX = e.touches ? e.touches[</span><span class="s12">0</span><span class="s1">].clientX : e.clientX;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clientY = e.touches ? e.touches[</span><span class="s12">0</span><span class="s1">].clientY : e.clientY;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>draggedElement = piece;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>startX = clientX;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>startY = clientY;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>initialX = parseFloat(piece.style.left);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>initialY = parseFloat(piece.style.top);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>piece.parentElement.appendChild(piece);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> handleDrag(e) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (!draggedElement) </span><span class="s10">return</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (e.cancelable) e.preventDefault();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clientX = e.touches ? e.touches[</span><span class="s12">0</span><span class="s1">].clientX : e.clientX;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clientY = e.touches ? e.touches[</span><span class="s12">0</span><span class="s1">].clientY : e.clientY;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> dx = clientX - startX;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> dy = clientY - startY;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>draggedElement.style.left = </span><span class="s11">`</span><span class="s1">${initialX + dx}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>draggedElement.style.top = </span><span class="s11">`</span><span class="s1">${initialY + dy}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>snapToOthers(draggedElement);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> snapToOthers(el) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> snapThreshold = </span><span class="s12">30</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">let</span><span class="s1"> currentSnapped = </span><span class="s10">false</span><span class="s1">;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">for</span><span class="s1"> (</span><span class="s10">let</span><span class="s1"> other </span><span class="s10">of</span><span class="s1"> activePieces) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">if</span><span class="s1"> (other === el) </span><span class="s10">continue</span><span class="s1">;</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">                </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> elType = el.dataset.type;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> otherType = other.dataset.type;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> elL = parseFloat(el.style.left);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> elT = parseFloat(el.style.top);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> otL = parseFloat(other.style.left);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> otT = parseFloat(other.style.top);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> otH = parseInt(other.dataset.charge) * </span><span class="s12">45</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> elH = parseInt(el.dataset.charge) * </span><span class="s12">45</span><span class="s1">;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p9"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s1">// Horizontal snap</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">if</span><span class="s1"> (elType !== otherType) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> cationX = elType === </span><span class="s11">'cation'</span><span class="s1"> ? elL : otL;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> anionX = elType === </span><span class="s11">'anion'</span><span class="s1"> ? elL : otL;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> hGap = </span><span class="s13">Math</span><span class="s1">.abs((cationX + </span><span class="s12">60</span><span class="s1">) - anionX);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> vDiff = </span><span class="s13">Math</span><span class="s1">.abs(elT - otT);</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">if</span><span class="s1"> (hGap &lt; snapThreshold &amp;&amp; vDiff &lt; snapThreshold) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>el.style.left = elType === </span><span class="s11">'cation'</span><span class="s1"> ? </span><span class="s11">`</span><span class="s1">${otL - </span><span class="s12">60</span><span class="s1">}</span><span class="s11">px`</span><span class="s1"> : </span><span class="s11">`</span><span class="s1">${otL + </span><span class="s12">60</span><span class="s1">}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>el.style.top = </span><span class="s11">`</span><span class="s1">${otT}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>currentSnapped = </span><span class="s10">true</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s14">// Vertical snap</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">if</span><span class="s1"> (elType === otherType) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> hDiff = </span><span class="s13">Math</span><span class="s1">.abs(elL - otL);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> vGapBelow = </span><span class="s13">Math</span><span class="s1">.abs(elT - (otT + otH));</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> vGapAbove = </span><span class="s13">Math</span><span class="s1">.abs((elT + elH) - otT);</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">if</span><span class="s1"> (hDiff &lt; </span><span class="s12">15</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s10">if</span><span class="s1"> (vGapBelow &lt; snapThreshold) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>el.style.top = </span><span class="s11">`</span><span class="s1">${otT + otH}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>el.style.left = </span><span class="s11">`</span><span class="s1">${otL}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>currentSnapped = </span><span class="s10">true</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>} </span><span class="s10">else</span><span class="s1"> </span><span class="s10">if</span><span class="s1"> (vGapAbove &lt; snapThreshold) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>el.style.top = </span><span class="s11">`</span><span class="s1">${otT - elH}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>el.style.left = </span><span class="s11">`</span><span class="s1">${otL}</span><span class="s11">px`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>currentSnapped = </span><span class="s10">true</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>el.classList.toggle(</span><span class="s11">'snapped'</span><span class="s1">, currentSnapped);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> endDrag() {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>draggedElement = </span><span class="s10">null</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> clearCanvas() {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>activePieces.forEach(p =&gt; p.remove());</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>activePieces = [];</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById(</span><span class="s11">'instruction-overlay'</span><span class="s1">).style.opacity = </span><span class="s11">'0.2'</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> checkBonding() {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (activePieces.length === </span><span class="s12">0</span><span class="s1">) </span><span class="s10">return</span><span class="s1">;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> clusters = [];</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> visited = </span><span class="s10">new</span><span class="s1"> </span><span class="s13">Set</span><span class="s1">();</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>activePieces.forEach((piece, index) =&gt; {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">if</span><span class="s1"> (visited.has(index)) </span><span class="s10">return</span><span class="s1">;</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">                </span></span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> cluster = [];</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> queue = [index];</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>visited.add(index);</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">while</span><span class="s1">(queue.length &gt; </span><span class="s12">0</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">const</span><span class="s1"> currIdx = queue.shift();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>cluster.push(activePieces[currIdx]);</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>activePieces.forEach((other, otherIdx) =&gt; {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s10">if</span><span class="s1"> (visited.has(otherIdx)) </span><span class="s10">return</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s10">const</span><span class="s1"> r1 = activePieces[currIdx].getBoundingClientRect();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s10">const</span><span class="s1"> r2 = other.getBoundingClientRect();</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s10">const</span><span class="s1"> touching = !(r2.left &gt; r1.right + </span><span class="s12">5</span><span class="s1"> || r2.right &lt; r1.left - </span><span class="s12">5</span><span class="s1"> || r2.top &gt; r1.bottom + </span><span class="s12">5</span><span class="s1"> || r2.bottom &lt; r1.top - </span><span class="s12">5</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s10">if</span><span class="s1"> (touching) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>visited.add(otherIdx);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                            </span>queue.push(otherIdx);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>clusters.push(cluster);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">let</span><span class="s1"> allValid = </span><span class="s10">true</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">let</span><span class="s1"> totalCations = </span><span class="s12">0</span><span class="s1">, totalAnions = </span><span class="s12">0</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">let</span><span class="s1"> cationRef = </span><span class="s10">null</span><span class="s1">, anionRef = </span><span class="s10">null</span><span class="s1">;</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>clusters.forEach(cluster =&gt; {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">let</span><span class="s1"> clusterPos = </span><span class="s12">0</span><span class="s1">, clusterNeg = </span><span class="s12">0</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>cluster.forEach(p =&gt; {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s10">if</span><span class="s1"> (p.dataset.type === </span><span class="s11">'cation'</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>clusterPos += parseInt(p.dataset.charge);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>totalCations++;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>cationRef = p.dataset;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>} </span><span class="s10">else</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>clusterNeg += parseInt(p.dataset.charge);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>totalAnions++;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                        </span>anionRef = p.dataset;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>});</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">if</span><span class="s1"> (clusterPos !== clusterNeg || clusterPos === </span><span class="s12">0</span><span class="s1">) allValid = </span><span class="s10">false</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (!allValid || clusters.length === </span><span class="s12">0</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> totalP = activePieces.reduce((acc, p) =&gt; acc + (p.dataset.type === </span><span class="s11">'cation'</span><span class="s1"> ? parseInt(p.dataset.charge) : </span><span class="s12">0</span><span class="s1">), </span><span class="s12">0</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> totalN = activePieces.reduce((acc, p) =&gt; acc + (p.dataset.type === </span><span class="s11">'anion'</span><span class="s1"> ? parseInt(p.dataset.charge) : </span><span class="s12">0</span><span class="s1">), </span><span class="s12">0</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">const</span><span class="s1"> diff = totalP - totalN;</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>showMessage(diff &gt; </span><span class="s12">0</span><span class="s4"> ? </span><span class="s1">`Unbalanced: Needs </span><span class="s4">${diff}</span><span class="s1"> more (-) charge.`</span><span class="s4"> : (diff &lt; </span><span class="s12">0</span><span class="s4"> ? </span><span class="s1">`Unbalanced: Needs </span><span class="s4">${</span><span class="s13">Math</span><span class="s4">.abs(diff)}</span><span class="s1"> more (+) charge.`</span><span class="s4"> : </span><span class="s1">"Ensure all pieces are connected!"</span><span class="s4">));</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">return</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (!cationRef || !anionRef) {</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>showMessage(</span><span class="s1">"Bonding requires both metal/polyatomic cations and anions."</span><span class="s4">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s10">return</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> gcd = (a, b) =&gt; b ? gcd(b, a % b) : a;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> common = gcd(totalCations, totalAnions);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>generateFormula(cationRef, anionRef, totalCations / common, totalAnions / common);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> formatSymbol(sym) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">return</span><span class="s1"> sym.replace(</span><span class="s6">/([0-9]+)/</span><span class="s10">g</span><span class="s1">, </span><span class="s11">'&lt;sub&gt;$1&lt;/sub&gt;'</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> generateFormula(cat, ani, nCat, nAni) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">let</span><span class="s1"> formulaHtml = </span><span class="s11">""</span><span class="s1">;</span></p>
-<p class="p6"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p9"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Cation portion</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (cat.poly === </span><span class="s11">"true"</span><span class="s1"> &amp;&amp; nCat &gt; </span><span class="s12">1</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>formulaHtml += </span><span class="s11">`(</span><span class="s1">${formatSymbol(cat.</span><span class="s10">symbol</span><span class="s1">)}</span><span class="s11">)&lt;sub&gt;</span><span class="s1">${nCat}</span><span class="s11">&lt;/sub&gt;`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>} </span><span class="s10">else</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>formulaHtml += formatSymbol(cat.</span><span class="s10">symbol</span><span class="s1">) + (nCat &gt; </span><span class="s12">1</span><span class="s1"> ? </span><span class="s11">`&lt;sub&gt;</span><span class="s1">${nCat}</span><span class="s11">&lt;/sub&gt;`</span><span class="s1"> : </span><span class="s11">''</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p9"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Anion portion</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">if</span><span class="s1"> (ani.poly === </span><span class="s11">"true"</span><span class="s1"> &amp;&amp; nAni &gt; </span><span class="s12">1</span><span class="s1">) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>formulaHtml += </span><span class="s11">`(</span><span class="s1">${formatSymbol(ani.</span><span class="s10">symbol</span><span class="s1">)}</span><span class="s11">)&lt;sub&gt;</span><span class="s1">${nAni}</span><span class="s11">&lt;/sub&gt;`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>} </span><span class="s10">else</span><span class="s1"> {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">                </span>formulaHtml += formatSymbol(ani.</span><span class="s10">symbol</span><span class="s1">) + (nAni &gt; </span><span class="s12">1</span><span class="s1"> ? </span><span class="s11">`&lt;sub&gt;</span><span class="s1">${nAni}</span><span class="s11">&lt;/sub&gt;`</span><span class="s1"> : </span><span class="s11">''</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById(</span><span class="s11">'compound-name'</span><span class="s1">).innerText = </span><span class="s11">`</span><span class="s1">${cat.name}</span><span class="s11"> </span><span class="s1">${ani.name}</span><span class="s11">`</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById(</span><span class="s11">'compound-formula'</span><span class="s1">).innerHTML = formulaHtml;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById(</span><span class="s11">'formula-modal'</span><span class="s1">).style.display = </span><span class="s11">'flex'</span><span class="s1">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> showMessage(msg) {</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s10">const</span><span class="s1"> t = document.createElement(</span><span class="s11">'div'</span><span class="s1">);</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">            </span>t.className = </span><span class="s1">'fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[3000] font-bold border-t-4 border-red-500 scale-in'</span><span class="s4">;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>t.innerText = msg;</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>document.body.appendChild(t);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; { t.style.opacity = </span><span class="s11">'0'</span><span class="s1">; setTimeout(() =&gt; t.remove(), </span><span class="s12">300</span><span class="s1">); }, </span><span class="s12">3000</span><span class="s1">);</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p6"><span class="s8"></span><br></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s10">function</span><span class="s1"> closeModal() { document.getElementById(</span><span class="s11">'formula-modal'</span><span class="s1">).style.display = </span><span class="s11">'none'</span><span class="s1">; }</span></p>
-<p class="p5"><span class="s1"><span class="Apple-converted-space">        </span>window.onload = init;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s1">script</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s3">&lt;/</span><span class="s1">body</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s3">&lt;/</span><span class="s1">html</span><span class="s3">&gt;</span></p>
+<body class="h-screen flex flex-col font-sans text-slate-900">
+
+    <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-500 p-2 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight leading-none">Ionic Lab</h1>
+                <p class="text-[10px] text-slate-400 font-medium uppercase tracking-widest mt-1">Neutralize the Charge</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="clearCanvas()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-xs transition font-semibold">Reset</button>
+            <button onclick="checkBonding()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold transition shadow-lg border-b-4 border-blue-800 active:border-b-0 active:translate-y-1">Check Balance</button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside class="sidebar p-3 flex flex-col gap-3 border-r border-slate-200">
+            <h2 class="font-black text-blue-600 text-center border-b border-blue-50 pb-2 uppercase text-[10px] tracking-widest">Cations (+)</h2>
+            <div id="cations-bench" class="space-y-3"></div>
+        </aside>
+
+        <main id="canvas" class="flex-1 relative canvas-area overflow-hidden bg-slate-50">
+            <div id="instruction-overlay" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-20 transition-opacity duration-500">
+                <p class="text-2xl font-black italic">CONSTRUCT A COMPOUND</p>
+                <p class="text-sm font-medium">Stack ions vertically and connect horizontally</p>
+            </div>
+        </main>
+
+        <aside class="sidebar p-3 flex flex-col gap-3 border-l border-slate-200">
+            <h2 class="font-black text-red-600 text-center border-b border-red-50 pb-2 uppercase text-[10px] tracking-widest">Anions (-)</h2>
+            <div id="anions-bench" class="space-y-3"></div>
+        </aside>
+    </div>
+
+    <div id="formula-modal" class="fixed inset-0 bg-slate-900/90 hidden items-center justify-center z-[2000] p-4 backdrop-blur-md">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-10 text-center border border-slate-100 scale-in">
+            <div id="modal-icon" class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h3 id="modal-status" class="text-slate-400 uppercase tracking-[0.2em] text-[10px] font-black mb-2">Neutral Compound Formed</h3>
+            <div id="compound-name" class="text-3xl font-extrabold text-slate-800 mb-2"></div>
+            <div id="compound-formula" class="text-6xl font-serif text-blue-600 mb-10 chem-formula tracking-tight"></div>
+            <button onclick="closeModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-lg">Continue Lab</button>
+        </div>
+    </div>
+
+    <script>
+        const cations = [
+            { id: 'nh4', name: 'Ammonium', symbol: 'NH₄', charge: 1, poly: true },
+            { id: 'li', name: 'Lithium', symbol: 'Li', charge: 1 },
+            { id: 'na', name: 'Sodium', symbol: 'Na', charge: 1 },
+            { id: 'k', name: 'Potassium', symbol: 'K', charge: 1 },
+            { id: 'ca', name: 'Calcium', symbol: 'Ca', charge: 2 },
+            { id: 'mg', name: 'Magnesium', symbol: 'Mg', charge: 2 },
+            { id: 'zn', name: 'Zinc', symbol: 'Zn', charge: 2 },
+            { id: 'fe2', name: 'Iron(II)', symbol: 'Fe', charge: 2 },
+            { id: 'cu2', name: 'Copper(II)', symbol: 'Cu', charge: 2 },
+            { id: 'al', name: 'Aluminium', symbol: 'Al', charge: 3 },
+            { id: 'fe3', name: 'Iron(III)', symbol: 'Fe', charge: 3 }
+        ];
+
+        const anions = [
+            { id: 'cl', name: 'Chloride', symbol: 'Cl', charge: 1 },
+            { id: 'no3', name: 'Nitrate', symbol: 'NO₃', charge: 1, poly: true },
+            { id: 'oh', name: 'Hydroxide', symbol: 'OH', charge: 1, poly: true },
+            { id: 'o', name: 'Oxide', symbol: 'O', charge: 2 },
+            { id: 's', name: 'Sulfide', symbol: 'S', charge: 2 },
+            { id: 'so4', name: 'Sulfate', symbol: 'SO₄', charge: 2, poly: true },
+            { id: 'co3', name: 'Carbonate', symbol: 'CO₃', charge: 2, poly: true },
+            { id: 'n', name: 'Nitride', symbol: 'N', charge: 3 },
+            { id: 'po4', name: 'Phosphate', symbol: 'PO₄', charge: 3, poly: true }
+        ];
+
+        let activePieces = [];
+        let draggedElement = null;
+        let startX, startY, initialX, initialY;
+
+        function init() {
+            renderBench('cations-bench', cations, 'cation');
+            renderBench('anions-bench', anions, 'anion');
+            window.addEventListener('mousemove', handleDrag);
+            window.addEventListener('mouseup', endDrag);
+            window.addEventListener('touchmove', handleDrag, { passive: false });
+            window.addEventListener('touchend', endDrag);
+        }
+
+        function createPieceSVG(type, charge, symbol) {
+            const width = 80;
+            const height = charge * 45;
+            const holeRadius = 14;
+            const color = type === 'cation' ? '#3b82f6' : '#ef4444';
+            const sign = type === 'cation' ? '+' : '-';
+            const chargeText = charge > 1 ? `${charge}${sign}` : sign;
+            
+            let svg = `<svg width="${width + 20}" height="${height}" viewBox="0 0 ${width + 20} ${height}" class="svg-piece" xmlns="http://www.w3.org/2000/svg">`;
+            
+            if (type === 'cation') {
+                let d = `M 0 0 H ${width} `;
+                for(let i=0; i<charge; i++) {
+                    const y = i * 45 + 22.5;
+                    d += `V ${y-holeRadius} A ${holeRadius} ${holeRadius} 0 0 0 ${width} ${y+holeRadius} `;
+                }
+                d += `V ${height} H 0 Z`;
+                svg += `<path d="${d}" fill="${color}" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>`;
+            } else {
+                let d = `M 20 0 H ${width+20} V ${height} H 20 `;
+                for(let i=charge-1; i>=0; i--) {
+                    const y = i * 45 + 22.5;
+                    d += `V ${y+holeRadius} A ${holeRadius} ${holeRadius} 0 0 1 20 ${y-holeRadius} `;
+                }
+                d += `Z`;
+                svg += `<path d="${d}" fill="${color}" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>`;
+            }
+
+            const centerX = type === 'cation' ? width/2 : width/2 + 20;
+            const centerY = height/2;
+            svg += `<text x="${centerX - 6}" y="${centerY + 7}" text-anchor="middle" fill="white" font-weight="900" font-size="20" font-family="serif">${symbol}</text>`;
+            svg += `<text x="${centerX + (symbol.length > 2 ? 16 : 12)}" y="${centerY - 4}" text-anchor="start" fill="white" fill-opacity="0.8" font-weight="bold" font-size="12" font-family="sans-serif">${chargeText}</text>`;
+            svg += `</svg>`;
+            return svg;
+        }
+
+        function renderBench(id, list, type) {
+            const bench = document.getElementById(id);
+            list.forEach(ion => {
+                const item = document.createElement('div');
+                item.className = 'flex flex-col items-center p-2 border border-slate-100 rounded-xl hover:bg-slate-50 cursor-pointer transition-all active:scale-95 bg-white';
+                item.innerHTML = `
+                    <div class="mb-1 pointer-events-none">${createPieceSVG(type, ion.charge, ion.symbol)}</div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-tight">${ion.name}</span>
+                `;
+                item.addEventListener('mousedown', (e) => startSpawn(e, ion, type));
+                item.addEventListener('touchstart', (e) => startSpawn(e, ion, type), { passive: false });
+                bench.appendChild(item);
+            });
+        }
+
+        function startSpawn(e, ion, type) {
+            if (e.cancelable) e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const piece = document.createElement('div');
+            piece.className = 'ion-piece';
+            piece.dataset.type = type;
+            piece.dataset.charge = ion.charge;
+            piece.dataset.symbol = ion.symbol;
+            piece.dataset.name = ion.name;
+            piece.dataset.id = ion.id;
+            piece.dataset.poly = ion.poly || false;
+            piece.innerHTML = createPieceSVG(type, ion.charge, ion.symbol);
+            
+            const canvas = document.getElementById('canvas');
+            canvas.appendChild(piece);
+            const canvasRect = canvas.getBoundingClientRect();
+            
+            initialX = clientX - canvasRect.left - 50;
+            initialY = clientY - canvasRect.top - (ion.charge * 45 / 2);
+            
+            piece.style.left = `${initialX}px`;
+            piece.style.top = `${initialY}px`;
+            
+            draggedElement = piece;
+            startX = clientX;
+            startY = clientY;
+            activePieces.push(piece);
+            document.getElementById('instruction-overlay').style.opacity = '0';
+
+            piece.addEventListener('mousedown', (e) => startExistingDrag(e, piece));
+            piece.addEventListener('touchstart', (e) => startExistingDrag(e, piece), { passive: false });
+        }
+
+        function startExistingDrag(e, piece) {
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            draggedElement = piece;
+            startX = clientX;
+            startY = clientY;
+            initialX = parseFloat(piece.style.left);
+            initialY = parseFloat(piece.style.top);
+            piece.parentElement.appendChild(piece);
+        }
+
+        function handleDrag(e) {
+            if (!draggedElement) return;
+            if (e.cancelable) e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+
+            draggedElement.style.left = `${initialX + dx}px`;
+            draggedElement.style.top = `${initialY + dy}px`;
+
+            snapToOthers(draggedElement);
+        }
+
+        function snapToOthers(el) {
+            const snapThreshold = 30;
+            let currentSnapped = false;
+
+            for (let other of activePieces) {
+                if (other === el) continue;
+                
+                const elType = el.dataset.type;
+                const otherType = other.dataset.type;
+                const elL = parseFloat(el.style.left);
+                const elT = parseFloat(el.style.top);
+                const otL = parseFloat(other.style.left);
+                const otT = parseFloat(other.style.top);
+                const otH = parseInt(other.dataset.charge) * 45;
+                const elH = parseInt(el.dataset.charge) * 45;
+
+                // Horizontal snap
+                if (elType !== otherType) {
+                    const cationX = elType === 'cation' ? elL : otL;
+                    const anionX = elType === 'anion' ? elL : otL;
+                    const hGap = Math.abs((cationX + 60) - anionX);
+                    const vDiff = Math.abs(elT - otT);
+
+                    if (hGap < snapThreshold && vDiff < snapThreshold) {
+                        el.style.left = elType === 'cation' ? `${otL - 60}px` : `${otL + 60}px`;
+                        el.style.top = `${otT}px`;
+                        currentSnapped = true;
+                    }
+                }
+
+                // Vertical snap
+                if (elType === otherType) {
+                    const hDiff = Math.abs(elL - otL);
+                    const vGapBelow = Math.abs(elT - (otT + otH));
+                    const vGapAbove = Math.abs((elT + elH) - otT);
+
+                    if (hDiff < 15) {
+                        if (vGapBelow < snapThreshold) {
+                            el.style.top = `${otT + otH}px`;
+                            el.style.left = `${otL}px`;
+                            currentSnapped = true;
+                        } else if (vGapAbove < snapThreshold) {
+                            el.style.top = `${otT - elH}px`;
+                            el.style.left = `${otL}px`;
+                            currentSnapped = true;
+                        }
+                    }
+                }
+            }
+            el.classList.toggle('snapped', currentSnapped);
+        }
+
+        function endDrag() {
+            draggedElement = null;
+        }
+
+        function clearCanvas() {
+            activePieces.forEach(p => p.remove());
+            activePieces = [];
+            document.getElementById('instruction-overlay').style.opacity = '0.2';
+        }
+
+        function checkBonding() {
+            if (activePieces.length === 0) return;
+
+            const clusters = [];
+            const visited = new Set();
+
+            activePieces.forEach((piece, index) => {
+                if (visited.has(index)) return;
+                
+                const cluster = [];
+                const queue = [index];
+                visited.add(index);
+
+                while(queue.length > 0) {
+                    const currIdx = queue.shift();
+                    cluster.push(activePieces[currIdx]);
+
+                    activePieces.forEach((other, otherIdx) => {
+                        if (visited.has(otherIdx)) return;
+                        const r1 = activePieces[currIdx].getBoundingClientRect();
+                        const r2 = other.getBoundingClientRect();
+                        const touching = !(r2.left > r1.right + 5 || r2.right < r1.left - 5 || r2.top > r1.bottom + 5 || r2.bottom < r1.top - 5);
+                        if (touching) {
+                            visited.add(otherIdx);
+                            queue.push(otherIdx);
+                        }
+                    });
+                }
+                clusters.push(cluster);
+            });
+
+            let allValid = true;
+            let totalCations = 0, totalAnions = 0;
+            let cationRef = null, anionRef = null;
+
+            clusters.forEach(cluster => {
+                let clusterPos = 0, clusterNeg = 0;
+                cluster.forEach(p => {
+                    if (p.dataset.type === 'cation') {
+                        clusterPos += parseInt(p.dataset.charge);
+                        totalCations++;
+                        cationRef = p.dataset;
+                    } else {
+                        clusterNeg += parseInt(p.dataset.charge);
+                        totalAnions++;
+                        anionRef = p.dataset;
+                    }
+                });
+                if (clusterPos !== clusterNeg || clusterPos === 0) allValid = false;
+            });
+
+            if (!allValid || clusters.length === 0) {
+                const totalP = activePieces.reduce((acc, p) => acc + (p.dataset.type === 'cation' ? parseInt(p.dataset.charge) : 0), 0);
+                const totalN = activePieces.reduce((acc, p) => acc + (p.dataset.type === 'anion' ? parseInt(p.dataset.charge) : 0), 0);
+                const diff = totalP - totalN;
+                showMessage(diff > 0 ? `Unbalanced: Needs ${diff} more (-) charge.` : (diff < 0 ? `Unbalanced: Needs ${Math.abs(diff)} more (+) charge.` : "Ensure all pieces are connected!"));
+                return;
+            }
+
+            if (!cationRef || !anionRef) {
+                showMessage("Bonding requires both metal/polyatomic cations and anions.");
+                return;
+            }
+
+            const gcd = (a, b) => b ? gcd(b, a % b) : a;
+            const common = gcd(totalCations, totalAnions);
+            generateFormula(cationRef, anionRef, totalCations / common, totalAnions / common);
+        }
+
+        function formatSymbol(sym) {
+            return sym.replace(/([0-9]+)/g, '<sub>$1</sub>');
+        }
+
+        function generateFormula(cat, ani, nCat, nAni) {
+            let formulaHtml = "";
+            
+            // Cation portion
+            if (cat.poly === "true" && nCat > 1) {
+                formulaHtml += `(${formatSymbol(cat.symbol)})<sub>${nCat}</sub>`;
+            } else {
+                formulaHtml += formatSymbol(cat.symbol) + (nCat > 1 ? `<sub>${nCat}</sub>` : '');
+            }
+
+            // Anion portion
+            if (ani.poly === "true" && nAni > 1) {
+                formulaHtml += `(${formatSymbol(ani.symbol)})<sub>${nAni}</sub>`;
+            } else {
+                formulaHtml += formatSymbol(ani.symbol) + (nAni > 1 ? `<sub>${nAni}</sub>` : '');
+            }
+
+            document.getElementById('compound-name').innerText = `${cat.name} ${ani.name}`;
+            document.getElementById('compound-formula').innerHTML = formulaHtml;
+            document.getElementById('formula-modal').style.display = 'flex';
+        }
+
+        function showMessage(msg) {
+            const t = document.createElement('div');
+            t.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[3000] font-bold border-t-4 border-red-500 scale-in';
+            t.innerText = msg;
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        function closeModal() { document.getElementById('formula-modal').style.display = 'none'; }
+        window.onload = init;
+    </script>
 </body>
 </html>
